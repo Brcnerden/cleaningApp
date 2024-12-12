@@ -1,35 +1,57 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import {
-  createStaticNavigation,
-  NavigationContainer,
-} from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreens from "./screens/HomeScreens";
-import LoginScreens from "./screens/LoginScreens";
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { Button, Text, View, StyleSheet } from "react-native";
+import HomeScreen from "./screens/HomeScreens";
+import LoginScreen from "./screens/LoginScreens";
+import SingInScreen from "./screens/SingInScreens";
 
-const Stack = createNativeStackNavigator();
+import { Ionicons } from "@expo/vector-icons";
+
+type RootStackParamList = {
+  Login: undefined;
+  Home: undefined;
+  SingIn: undefined;
+};
+
+const Stack = createStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
-          options={{ headerShown: false }}
           name="Login"
-          component={LoginScreens}
+          component={LoginScreen}
+          options={{
+            title: "CLEANING APP",
+            headerTintColor: "rgba(23, 137, 252, 1)",
+            headerTitleStyle: {
+              fontWeight: "bold",
+              fontSize: 20,
+            },
+            headerBackImage: () => (
+              <Ionicons name="arrow-back" size={24} color="black" />
+            ),
+          }}
         />
-        <Stack.Screen name="Home" component={HomeScreens} />
+        <Stack.Screen
+          name="SingIn"
+          component={SingInScreen}
+          options={{
+            title: "CLEANING APP",
+            headerTintColor: "rgba(23, 137, 252, 1)",
+            headerTitleStyle: {
+              fontWeight: "bold",
+              fontSize: 20,
+            },
+            headerBackImage: () => (
+              <Ionicons name="arrow-back" size={24} color="black" />
+            ),
+          }}
+        />
+        <Stack.Screen name="Home" component={HomeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

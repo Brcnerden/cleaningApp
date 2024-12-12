@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import colors from "../colors";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 
 import { useFonts } from "expo-font";
 import {
@@ -17,7 +19,7 @@ import {
   Poppins_600SemiBold,
 } from "@expo-google-fonts/poppins";
 
-export default function LoginScreens() {
+export default function SingInScreens() {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_700Bold,
@@ -39,8 +41,7 @@ export default function LoginScreens() {
         <Text style={styles.title}>CLEANING APP</Text>
       </View> */}
       <View style={styles.box}>
-        <Text style={styles.boxTitle}>E-Posta hesabın</Text>
-        <Text style={styles.boxTitle}>ile giriş yap</Text>
+        <Text style={styles.boxTitle}>E-Posta hesabın ile Kayıt Ol</Text>
         <View>
           <Text style={styles.inputText}>E-Posta</Text>
           <TextInput
@@ -59,11 +60,19 @@ export default function LoginScreens() {
             style={styles.input}
           />
         </View>
-        <Text style={styles.password}>Şifremi unuttum</Text>
+        <View>
+          <Text style={styles.inputText}>Şifre Tekrar</Text>
+          <TextInput
+            autoCapitalize="none"
+            autoCorrect={false}
+            placeholder="Şifre"
+            style={styles.input}
+          />
+        </View>
         <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>GİRİŞ YAP</Text>
+          <Text style={styles.buttonText}>Kayıt OL</Text>
         </TouchableOpacity>
-        <Text style={styles.SingIn}>Hesap Oluştur</Text>
+        <Text style={styles.SingIn}>Giriş Yap</Text>
         <View style={styles.FooterBox}>
           <Text style={styles.footer}>ya da bununla devam et</Text>
           <View style={styles.icons}>
