@@ -37,7 +37,7 @@ const CalendarApp: React.FC = () => {
     const today = new Date();
     const week = getWeekDates(today);
     setSelectedWeek(week); // Haftayı state'e ekle
-    setSelectedDate(today.toISOString().split("T")[0]); // Bugünü işaretle
+    setSelectedDate(today.toISOString().split("T")[0]);
   }, []);
 
   const handleDayPress = (day: DateData) => {
@@ -52,7 +52,12 @@ const CalendarApp: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { height: isWeekVisible ? 58 : 400 }, // Haftalık veya aylık görünüm için yükseklik değişimi
+      ]}
+    >
       {/* Haftalık Görünüm */}
       {isWeekVisible && (
         <View style={styles.weekContainer}>
@@ -123,9 +128,9 @@ const CalendarApp: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: "flex-start",
     width: 330,
+    marginBottom: 42,
   },
   weekContainer: {
     width: "100%",

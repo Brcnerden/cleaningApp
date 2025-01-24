@@ -1,5 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
-import CalendarApp from "../Calendar";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import colors from "../../colors";
 import { useFonts } from "expo-font";
 import {
@@ -8,8 +7,20 @@ import {
   Poppins_500Medium,
   Poppins_600SemiBold,
 } from "@expo-google-fonts/poppins";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+type RootStackParamList = {
+  Login: undefined;
+  Home: undefined;
+  SingIn: undefined;
+  AddRoom: undefined;
+};
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, "AddRoom">;
 
 export default function Header() {
+  const navigation = useNavigation<NavigationProp>();
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_700Bold,
@@ -23,14 +34,19 @@ export default function Header() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>CLEANING APP</Text>
-      <CalendarApp />
+      <View style={styles.text}>
+        <Text style={styles.title}>CLEANING APP</Text>
+        {/* <View>
+          <TouchableOpacity onPress={handlePress}>
+            <Text style={styles.buttons}>+</Text>
+          </TouchableOpacity>
+        </View> */}
+      </View>
     </View>
   );
 }
 const styles = StyleSheet.create({
   title: {
-    paddingTop: 44,
     color: colors.primary,
     fontFamily: "Poppins_600SemiBold",
     fontSize: 24,
@@ -38,8 +54,18 @@ const styles = StyleSheet.create({
     marginBottom: 13,
   },
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
     paddingHorizontal: 20,
+    alignItems: "center",
+  },
+  text: {
+    flexDirection: "row",
+    paddingTop: 44,
+  },
+  buttons: {
+    fontSize: 24,
+    color: colors.primary,
+    marginBottom: 13,
+    marginLeft: 24,
+    fontWeight: "bold",
   },
 });

@@ -22,6 +22,7 @@ import {
 } from "@expo-google-fonts/poppins";
 import React from "react";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import Header from "../components/Header/Header";
 
 interface SignUpFormValues {
   email: string;
@@ -72,107 +73,115 @@ const SingInScreens: React.FC = () => {
   });
 
   return (
-    <Formik
-      initialValues={{ email: "", password: "", confirmPassword: "" }}
-      validationSchema={SignUpSchema} // yup dogrulama şemasını çağırıyor
-      onSubmit={handleSingUp} //handleSingUp fonksiyonu aktive eder.
-    >
-      {({
-        handleChange,
-        handleBlur,
-        handleSubmit,
-        values,
-        errors,
-        touched,
-        isSubmitting,
-      }: FormikProps<SignUpFormValues>) => (
-        <ImageBackground
-          source={require("../assets/images/backgorund1.png")}
-          style={styles.background}
-        >
-          <View style={styles.box}>
-            <Text style={styles.boxTitle}>E-Posta hesabın ile Kayıt Ol</Text>
-            <View>
-              <Text style={styles.inputText}>E-Posta</Text>
-              <TextInput
-                autoCapitalize="none"
-                autoCorrect={false}
-                placeholder="E-Posta"
-                onChangeText={handleChange("email")}
-                onBlur={handleBlur("email")}
-                value={values.email}
-                style={styles.input}
-              />
-              {touched.email && errors.email && (
-                <Text style={styles.error}>{errors.email}</Text>
+    <View>
+      <Header />
+      <Formik
+        initialValues={{ email: "", password: "", confirmPassword: "" }}
+        validationSchema={SignUpSchema} // yup dogrulama şemasını çağırıyor
+        onSubmit={handleSingUp} //handleSingUp fonksiyonu aktive eder.
+      >
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+          isSubmitting,
+        }: FormikProps<SignUpFormValues>) => (
+          <ImageBackground
+            source={require("../assets/images/backgorund1.png")}
+            style={styles.background}
+          >
+            <View style={styles.box}>
+              <Text style={styles.boxTitle}>E-Posta hesabın ile Kayıt Ol</Text>
+              <View>
+                <Text style={styles.inputText}>E-Posta</Text>
+                <TextInput
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  placeholder="E-Posta"
+                  onChangeText={handleChange("email")}
+                  onBlur={handleBlur("email")}
+                  value={values.email}
+                  style={styles.input}
+                />
+                {touched.email && errors.email && (
+                  <Text style={styles.error}>{errors.email}</Text>
+                )}
+              </View>
+              <View>
+                <Text style={styles.inputText}>Şifre</Text>
+                <TextInput
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  placeholder="Şifre"
+                  style={styles.input}
+                  secureTextEntry={true}
+                  onChangeText={handleChange("password")}
+                  onBlur={handleBlur("password")}
+                  value={values.password}
+                />
+                {touched.password && errors.password && (
+                  <Text style={styles.error}>{errors.password}</Text>
+                )}
+              </View>
+              <View>
+                <Text style={styles.inputText}>Şifre Tekrar</Text>
+                <TextInput
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  placeholder="Şifre"
+                  style={styles.input}
+                  secureTextEntry
+                  onChangeText={handleChange("confirmPassword")}
+                  onBlur={handleBlur("confirmPassword")}
+                  value={values.confirmPassword}
+                />
+              </View>
+              {touched.confirmPassword && errors.confirmPassword && (
+                <Text style={styles.error}>{errors.confirmPassword}</Text>
               )}
-            </View>
-            <View>
-              <Text style={styles.inputText}>Şifre</Text>
-              <TextInput
-                autoCapitalize="none"
-                autoCorrect={false}
-                placeholder="Şifre"
-                style={styles.input}
-                secureTextEntry={true}
-                onChangeText={handleChange("password")}
-                onBlur={handleBlur("password")}
-                value={values.password}
-              />
-              {touched.password && errors.password && (
-                <Text style={styles.error}>{errors.password}</Text>
-              )}
-            </View>
-            <View>
-              <Text style={styles.inputText}>Şifre Tekrar</Text>
-              <TextInput
-                autoCapitalize="none"
-                autoCorrect={false}
-                placeholder="Şifre"
-                style={styles.input}
-                secureTextEntry
-                onChangeText={handleChange("confirmPassword")}
-                onBlur={handleBlur("confirmPassword")}
-                value={values.confirmPassword}
-              />
-            </View>
-            {touched.confirmPassword && errors.confirmPassword && (
-              <Text style={styles.error}>{errors.confirmPassword}</Text>
-            )}
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => handleSubmit()}
-              disabled={isSubmitting}
-            >
-              <Text style={styles.buttonText}>
-                {isSubmitting ? "Yükleniyor..." : "Kayıt Ol"}
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => handleSubmit()}
+                disabled={isSubmitting}
+              >
+                <Text style={styles.buttonText}>
+                  {isSubmitting ? "Yükleniyor..." : "Kayıt Ol"}
+                </Text>
+              </TouchableOpacity>
+              <Text
+                onPress={() => navigation.navigate("Login")}
+                style={styles.SingIn}
+              >
+                Giriş Yap
               </Text>
-            </TouchableOpacity>
-            <Text style={styles.SingIn}>Giriş Yap</Text>
-            <View style={styles.FooterBox}>
-              <Text style={styles.footer}>ya da bununla devam et</Text>
-              <View style={styles.icons}>
-                <View>
-                  <Image
-                    source={require("../assets/images/Button Primary (1).png")}
-                  />
-                </View>
-                <View>
-                  <Image
-                    source={require("../assets/images/Button Primary (2).png")}
-                  />
-                </View>
-                <View>
-                  <Image
-                    source={require("../assets/images/Button Primary.png")}
-                  />
+              <View style={styles.FooterBox}>
+                <Text style={styles.footer}>ya da bununla devam et</Text>
+                <View style={styles.icons}>
+                  <View>
+                    <Image
+                      source={require("../assets/images/Button Primary (1).png")}
+                    />
+                  </View>
+                  <View>
+                    <Image
+                      source={require("../assets/images/Button Primary (2).png")}
+                    />
+                  </View>
+                  <View>
+                    <Image
+                      source={require("../assets/images/Button Primary.png")}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
-        </ImageBackground>
-      )}
-    </Formik>
+          </ImageBackground>
+        )}
+      </Formik>
+    </View>
   );
 };
 

@@ -1,7 +1,9 @@
-import { initializeApp } from "firebase/app";
-import AsyncStorage from "@react-native-async-storage/async-storage"; // k,mlik dogrulamayı kalıcı hale getirmek içinr
+import { initializeApp, getApps } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Kimlik doğrulama bilgisini saklamak için
 
-// Your web app's Firebase configuration
+// Firebase yapılandırması
 const firebaseConfig = {
   apiKey: "AIzaSyBZARj5Mx61iP_IVv5u0ZYvGS1zFlfFGyk",
   authDomain: "cleaningapp-918ce.firebaseapp.com",
@@ -12,13 +14,26 @@ const firebaseConfig = {
   measurementId: "G-FSFQWJE4MW",
 };
 
-// Initialize Firebase
+// Firebase uygulamasını başlat
+if (!getApps().length) {
+  initializeApp(firebaseConfig);
+}
+
+// Firebase servislerini başlat
 const FIREBASE_APP = initializeApp(firebaseConfig);
+const db = getFirestore(FIREBASE_APP); // Firestore için
+const auth = getAuth(FIREBASE_APP); // Authentication için
 
-// Export Firebase services
-// export const auth = getAuth(app); //auth değişkeni, Firebase Authentication servisini temsil eder. Uygulamanızda kullanıcı oturumu açma, kayıt olma, şifre sıfırlama ve oturum yönetimi gibi işlemleri gerçekleştirmek için kullanılır.
+// Kimlik doğrulama durumu değişikliklerini dinle ve AsyncStorage ile sakla
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    // Kullanıcı oturum açmışsa UID'yi sakla
+    await AsyncStorage.setItem("userToken", user.uid);
+  } else {
+    // Kullanıcı çıkış yapmışsa UID'yi kaldır
+    await AsyncStorage.removeItem("userToken");
+  }
+});
 
-// export const firestore = getFirestore(app); //firestore değişkeni, Firebase'in NoSQL bir bulut veritabanı olan Firestore'u temsil eder. Kullanıcılarınızın veya uygulamanızın ihtiyaç duyduğu verileri saklamak ve bu verilere erişmek için kullanılır.
-// export const storage = getStorage(app); //storage değişkeni, Firebase Storage'ı temsil eder. Uygulamanızda resim, video veya diğer dosyaları saklamak ve bu dosyalara erişmek için kullanılır.
-
-export { FIREBASE_APP };
+// Firebase servislerini dışa aktar
+export { FIREBASE_APP, db, auth };

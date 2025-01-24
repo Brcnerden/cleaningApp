@@ -8,9 +8,7 @@ import {
   UserCredential,
 } from "firebase/auth";
 
-import { FIREBASE_APP } from "../api/firebase-config";
-
-const auth = getAuth(FIREBASE_APP); // kullanmak istediğin Firebase hizmetini başlatma işlevine aktarır.
+import { FIREBASE_APP, auth } from "../api/firebase-config";
 
 interface AuthCallback {
   (user: User | null): void; // onAuthStateChanged geri çağırma fonksiyonu
