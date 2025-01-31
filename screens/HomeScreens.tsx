@@ -17,7 +17,7 @@ import CalendarApp from "../components/Calendar";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 import { Duty, addRoom } from "../redux/userSlice";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
@@ -32,7 +32,7 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList, "AddRoom">;
 
 export default function HomeScreen() {
   const handlePress = () => {
-    navigation.navigate("AddRoom"); // "AddRoomScreen" yönlendirme adı
+    navigation.navigate("AddRoom");
   };
 
   const navigation = useNavigation<NavigationProp>();

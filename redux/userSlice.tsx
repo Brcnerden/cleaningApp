@@ -1,15 +1,34 @@
-// userSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import Toast from "react-native-toast-message";
 
 export interface Duty {
-  text: string;
-  number: number;
-  date: string;
-  id: string;
-  duration: string;
-  roomId: string;
-  roomName: string; // roomName özelliği eklendi
+  daily?: {
+    id: string;
+    text: string;
+    number: number;
+    date: string;
+    duration: string;
+    roomId: string;
+    roomName: string;
+  }[];
+  weekly?: {
+    id: string;
+    text: string;
+    number: number;
+    date: string;
+    duration: string;
+    roomId: string;
+    roomName: string;
+  }[];
+  monthly?: {
+    id: string;
+    text: string;
+    number: number;
+    date: string;
+    duration: string;
+    roomId: string;
+    roomName: string;
+  }[];
 }
 
 interface Room {
@@ -23,6 +42,12 @@ interface Room {
   };
 }
 
+export interface Duties {
+  daily: Duty[];
+  weekly: Duty[];
+  monthly: Duty[];
+}
+
 interface UserState {
   user: {
     id: string;
@@ -34,6 +59,7 @@ interface UserState {
   duty: Duty[] | null;
   rooms: Room[];
   roomId: string;
+  duties: Duties;
 }
 
 const initialState: UserState = {
@@ -42,6 +68,7 @@ const initialState: UserState = {
   duty: [],
   rooms: [],
   roomId: "",
+  duties: { daily: [], weekly: [], monthly: [] },
 };
 
 const userSlice = createSlice({
@@ -63,27 +90,62 @@ const userSlice = createSlice({
     },
     setDuty: (state, action: PayloadAction<Duty>) => {
       const newDuty = action.payload;
-      if (state.duty) {
-        const isDutyExist = state.duty.some(
-          (duty) => duty.text === newDuty.text && duty.date === newDuty.date
-        );
-        if (!isDutyExist) {
-          state.duty.push(newDuty);
-        } else {
+      let duration: string | undefined;
+
+      if (newDuty.daily) {
+        duration = newDuty.daily[0]?.duration;
+      } else if (newDuty.weekly) {
+        duration = newDuty.weekly[0]?.duration;
+      } else if (newDuty.monthly) {
+        duration = newDuty.monthly[0]?.duration;
+      }
+
+      if (!duration) {
+        Toast.show({
+          type: "error",
+          text1: "Görevin süresi bulunamadı.",
+          position: "bottom",
+        });
+        return;
+      }
+
+      switch (duration) {
+        case "GÜNLÜK":
+          state.duties.daily.push(newDuty);
+          break;
+        case "HAFTALIK":
+          state.duties.weekly.push(newDuty);
+          break;
+        case "AYLIK":
+          state.duties.monthly.push(newDuty);
+          break;
+        default:
           Toast.show({
             type: "error",
-            text1: "Bu görev zaten var.",
+            text1: "Görevin geçersiz bir süresi var.",
             position: "bottom",
           });
-        }
-      } else {
-        state.duty = [newDuty];
+          return;
       }
+
+      Toast.show({
+        type: "success",
+        text1: `Görev başarıyla eklendi`,
+        position: "bottom",
+      });
     },
+    addDuty: (
+      state,
+      action: PayloadAction<{ type: keyof Duties; duty: Duty }>
+    ) => {
+      const { type, duty } = action.payload;
+      state.duties[type].push(duty);
+    },
+
     addRoom: (state, action: PayloadAction<Room>) => {
       const newRoom: Room = {
         ...action.payload,
-        tasks: { daily: [], weekly: [], monthly: [] }, // Varsayılan görev listeleri
+        tasks: { daily: [], weekly: [], monthly: [] },
       };
       state.rooms.push(newRoom);
     },
@@ -91,53 +153,42 @@ const userSlice = createSlice({
       state,
       action: PayloadAction<{
         roomId: string;
-        type: keyof Room["tasks"];
+        type: keyof Room["tasks"]; // daily, weekly, monthly
         task: Duty;
       }>
     ) => {
-      if (!state.user?.rooms) {
+      const { roomId, type, task } = action.payload;
+      const room = state.rooms.find((r) => r.id === roomId);
+
+      if (!room) {
         Toast.show({
           type: "error",
-          text1: "Kullanıcı veya odalar bulunamadı.",
+          text1: "Oda bulunamadı.",
           position: "bottom",
         });
         return;
       }
 
-      const roomIndex = state.user.rooms.findIndex(
-        (room) => room.id === action.payload.roomId
-      );
+      // Oda bulunursa, ilgili görevi doğru türdeki diziye ekleyelim
+      room.tasks[type].push(task);
 
-      if (roomIndex === -1) {
-        Toast.show({
-          type: "error",
-          text1: "Belirtilen oda bulunamadı.",
-          position: "bottom",
-        });
-        return;
-      }
-
-      const selectedRoom = state.user.rooms[roomIndex];
-
-      // roomName'i de ekliyoruz
-      state.user.rooms[roomIndex] = {
-        ...state.user.rooms[roomIndex],
-        tasks: {
-          ...selectedRoom.tasks,
-          [action.payload.type]: [
-            ...selectedRoom.tasks[action.payload.type],
-            {
-              ...action.payload.task,
-              roomName: selectedRoom.name, // roomName ekleniyor
-            },
-          ],
-        },
-      };
+      Toast.show({
+        type: "success",
+        text1: `Görev başarıyla ekledi: ${task}`,
+        position: "bottom",
+      });
     },
   },
 });
 
-export const { setUser, logout, setDuty, addRoom, addTaskToRoom, setRoomId } =
-  userSlice.actions;
+export const {
+  setUser,
+  logout,
+  setDuty,
+  addRoom,
+  addTaskToRoom,
+  setRoomId,
+  addDuty,
+} = userSlice.actions;
 
 export default userSlice.reducer;

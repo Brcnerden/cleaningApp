@@ -20,7 +20,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import Inputs from "../Inputs/Inputs";
 import { useDispatch } from "react-redux";
-import { setRoomId } from "../../redux/userSlice";
+import { setRoomId, Duty } from "../../redux/userSlice";
 
 type propsType = {
   img: any;
@@ -32,16 +32,38 @@ export default function InputHeader({ img, text, roomId }: propsType) {
   const dispatch = useDispatch();
   const [isVisible, setIsVisible] = useState(false);
 
+  // const duty = useSelector((state: RootState) => state.user?.duty || []);
+
+  // const allTasks = duty.flatMap((item) => [
+  //   ...(item.daily || []),
+  //   ...(item.weekly || []),
+  //   ...(item.monthly || []),
+  // ]);
+
+  // const filteredDuties = allTasks.filter((task) => task.roomId === roomId);
+
+  // Görevleri tek bir listeye çevir ve roomId'ye göre filtrele
+
+  const duties = useSelector((state: RootState) => state.user.duties);
+
+  const allDuties = [
+    ...(duties?.daily || []),
+    ...(duties?.weekly || []),
+    ...(duties?.monthly || []),
+  ];
+
+  const allTasks = allDuties.flatMap((duty) => [
+    ...(duty.daily || []),
+    ...(duty.weekly || []),
+    ...(duty.monthly || []),
+  ]);
+
+  console.log("allTask" + allTasks);
+  console.log("allDuties" + JSON.stringify(allDuties, null, 2));
+
   useEffect(() => {
     dispatch(setRoomId(roomId));
   }, [roomId, dispatch]);
-
-  const roomTasks = useSelector(
-    (state: RootState) =>
-      state.user.rooms.find((room) => room.id === roomId)?.tasks.daily || []
-  );
-
-  const duty = useSelector((state: RootState) => state.user?.duty || []);
 
   const toggleModal = () => {
     setIsVisible(!isVisible);
@@ -79,9 +101,9 @@ export default function InputHeader({ img, text, roomId }: propsType) {
         </View>
       </View>
 
-      {duty.length > 0 ? (
+      {allTasks.length > 0 ? (
         <FlatList
-          data={duty}
+          data={allTasks}
           keyExtractor={(item) => item.id}
           renderItem={({ item, index }) => (
             <Inputs

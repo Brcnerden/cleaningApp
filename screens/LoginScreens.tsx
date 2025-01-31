@@ -22,11 +22,16 @@ import {
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { signInUser } from "../services/auth";
-import { UserData, createUser } from "../services/user";
+import { createUser } from "../services/user";
 import { useDispatch } from "react-redux";
 
 import { setUser } from "../redux/userSlice";
 import Header from "../components/Header/Header";
+
+type UserData = {
+  email: string;
+  password: string;
+};
 
 type RootStackParamList = {
   Login: undefined;
@@ -68,11 +73,7 @@ const LoginScreens: React.FC = () => {
         const token = await user.getIdToken();
         dispatch(setUser({ id: user.uid, email: user.email, token }));
 
-        createUser(user.uid, {
-          id: user.uid,
-          password: values.password,
-          email: values.email,
-        } as LoginUser)
+        createUser(user.uid, values.email, values.password)
           .then(() => {
             console.log("Kullanıcı başarıyla giriş yapıldı.");
           })
