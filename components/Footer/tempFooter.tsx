@@ -9,7 +9,10 @@ export default function Footer() {
         text="Ana Sayfa"
         img={require("../../assets/images/Icon (2).png")}
       />
-      <Buttons text="Takvim" img={require("../../assets/images/Icon.png")} />
+      <Buttons
+        text="Takvim"
+        img={require("../../assets/images/calender.png")}
+      />
       <Buttons
         text="İstatistik"
         img={require("../../assets/images/Icon (3).png")}

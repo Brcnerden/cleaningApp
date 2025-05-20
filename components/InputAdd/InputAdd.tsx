@@ -20,36 +20,15 @@ import { RootState } from "../../redux/store";
 import styles from "./InputAdd.styles";
 import UUID from "react-native-uuid";
 import { addDutyToRoom } from "../../services/dutyService";
-import { Duties } from "../../redux/userSlice";
 
 interface Duty {
-  daily?: {
-    id: string;
-    text: string;
-    number: number;
-    date: string;
-    duration: string;
-    roomId: string;
-    roomName: string;
-  }[];
-  weekly?: {
-    id: string;
-    text: string;
-    number: number;
-    date: string;
-    duration: string;
-    roomId: string;
-    roomName: string;
-  }[];
-  monthly?: {
-    id: string;
-    text: string;
-    number: number;
-    date: string;
-    duration: string;
-    roomId: string;
-    roomName: string;
-  }[];
+  id: string;
+  text: string;
+  number: number;
+  date: string;
+  duration: string;
+  roomId: string;
+  roomName: string;
 }
 
 type Task = string;
@@ -73,12 +52,10 @@ export default function InputAdd({ isOpen, roomId }: any): JSX.Element {
     "Halı Silme",
   ]); // Görevler listesi
   const roomIdSelect = useSelector((state: RootState) => state.user.roomId);
-  const duty = useSelector((state: RootState) => state.user.duty);
+  const duties = useSelector((state: RootState) => state.user.duties);
 
   const dispatch = useDispatch();
 
-  // const handleAddTask = async () => {
-  //   try {
   //     // addDutyToRoom fonksiyonunu çağırıyoruz
   //     const dutyId = await addDutyToRoom(roomIdSelect, newDuty);
   //     console.log(dutyId);
@@ -109,62 +86,19 @@ export default function InputAdd({ isOpen, roomId }: any): JSX.Element {
   //   }
   // };
 
-  const newDuty: Duty = {
-    daily:
-      selectedDuration === "GÜNLÜK"
-        ? [
-            {
-              id: UUID.v4().toString(),
-              text: customTask,
-              number: 1,
-              date: date.toLocaleDateString(),
-              duration: selectedDuration,
-              roomId: roomIdSelect,
-              roomName: "Oturma Odası",
-            },
-          ]
-        : [],
-    weekly:
-      selectedDuration === "HAFTALIK"
-        ? [
-            {
-              id: UUID.v4().toString(),
-              text: customTask,
-              number: 1,
-              date: date.toLocaleDateString(),
-              duration: selectedDuration,
-              roomId: roomIdSelect,
-              roomName: "Oturma Odası",
-            },
-          ]
-        : [],
-    monthly:
-      selectedDuration === "AYLIK"
-        ? [
-            {
-              id: UUID.v4().toString(),
-              text: customTask,
-              number: 1,
-              date: date.toLocaleDateString(),
-              duration: selectedDuration,
-              roomId: roomIdSelect,
-              roomName: "Oturma Odası",
-            },
-          ]
-        : [],
-  };
-
   const handleAddTask = async () => {
-    dispatch(setDuty(newDuty));
-    console.log("Yeni duty:", JSON.stringify(newDuty, null, 2));
-
-    setCustomTask(""); // Input'u temizle
-    setSelectedTask("");
-    isOpen(false);
+    const newDuty: Duty = {
+      id: UUID.v4(),
+      text: customTask || selectedTask,
+      number: 1,
+      date: date.toLocaleDateString(),
+      duration: selectedDuration,
+      roomId: roomId,
+      roomName: "Oturma Odası",
+    };
 
     try {
       dispatch(setDuty(newDuty));
-
       setCustomTask("");
       setSelectedTask("");
       isOpen(false);

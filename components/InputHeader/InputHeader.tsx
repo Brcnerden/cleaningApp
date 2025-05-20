@@ -31,35 +31,16 @@ type propsType = {
 export default function InputHeader({ img, text, roomId }: propsType) {
   const dispatch = useDispatch();
   const [isVisible, setIsVisible] = useState(false);
-
-  // const duty = useSelector((state: RootState) => state.user?.duty || []);
-
-  // const allTasks = duty.flatMap((item) => [
-  //   ...(item.daily || []),
-  //   ...(item.weekly || []),
-  //   ...(item.monthly || []),
-  // ]);
-
-  // const filteredDuties = allTasks.filter((task) => task.roomId === roomId);
-
-  // Görevleri tek bir listeye çevir ve roomId'ye göre filtrele
+  const [selectedRoomId, setSelectedRoomId] = useState(roomId);
 
   const duties = useSelector((state: RootState) => state.user.duties);
+  const tasksInSelectedRoom = duties.filter((task) => task.roomId === roomId);
 
-  const allDuties = [
-    ...(duties?.daily || []),
-    ...(duties?.weekly || []),
-    ...(duties?.monthly || []),
-  ];
+  const uniqueTasks = Array.from(
+    new Map(tasksInSelectedRoom.map((task) => [task.id, task])).values()
+  );
 
-  const allTasks = allDuties.flatMap((duty) => [
-    ...(duty.daily || []),
-    ...(duty.weekly || []),
-    ...(duty.monthly || []),
-  ]);
-
-  console.log("allTask" + allTasks);
-  console.log("allDuties" + JSON.stringify(allDuties, null, 2));
+  const validTasks = uniqueTasks.filter((task) => task.duration);
 
   useEffect(() => {
     dispatch(setRoomId(roomId));
@@ -67,6 +48,7 @@ export default function InputHeader({ img, text, roomId }: propsType) {
 
   const toggleModal = () => {
     setIsVisible(!isVisible);
+    setSelectedRoomId(roomId);
   };
 
   const [fontsLoaded] = useFonts({
@@ -96,14 +78,14 @@ export default function InputHeader({ img, text, roomId }: propsType) {
             animationType="slide"
             onRequestClose={toggleModal}
           >
-            <InputAdd isOpen={toggleModal} />
+            <InputAdd isOpen={toggleModal} roomId={selectedRoomId} />
           </Modal>
         </View>
       </View>
 
-      {allTasks.length > 0 ? (
+      {validTasks.length > 0 ? (
         <FlatList
-          data={allTasks}
+          data={validTasks}
           keyExtractor={(item) => item.id}
           renderItem={({ item, index }) => (
             <Inputs

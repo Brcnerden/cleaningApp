@@ -37,28 +37,10 @@ export default function HomeScreen() {
 
   const navigation = useNavigation<NavigationProp>();
 
-  const rooms = useSelector((state: RootState) => state.user?.rooms || []);
+  const rooms = useSelector((state: RootState) => state.user?.rooms);
   const dispatch = useDispatch();
 
   const [newRoomName, setNewRoomName] = useState("");
-
-  const handleAddRoom = () => {
-    if (newRoomName.trim() === "") return;
-
-    const newRoom = {
-      id: Date.now().toString(),
-      name: newRoomName,
-      icon: "default-icon.png",
-      tasks: {
-        daily: [],
-        weekly: [],
-        monthly: [],
-      },
-    };
-
-    dispatch(addRoom(newRoom));
-    setNewRoomName("");
-  };
 
   return (
     <SafeAreaView style={styles.container}>

@@ -33,11 +33,7 @@ const AddRoomScreens = () => {
         id: new Date().toISOString(), // Benzersiz bir ID oluşturuyoruz
         name: roomName,
         icon: getRoomImage(roomName), // Varsayılan bir ikon ekleyebilirsiniz
-        tasks: {
-          daily: [],
-          weekly: [],
-          monthly: [],
-        }, // Odanın görseli
+        tasks: [],
       };
 
       await addRoomToUser(userId, roomName); // Veritabanına ekleme işlemi
