@@ -5,8 +5,15 @@
     "jsx": "react-native",
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@env": ["env.d.ts"]
+    }
   },
+  "include": ["api/**/*", "env.d.ts"],
   "exclude": ["node_modules"],
   "extends": "expo/tsconfig.base"
 }

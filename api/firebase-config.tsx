@@ -1,39 +1,44 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import AsyncStorage from "@react-native-async-storage/async-storage"; // Kimlik doğrulama bilgisini saklamak için
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  FIREBASE_API_KEY,
+  FIREBASE_AUTH_DOMAIN,
+  FIREBASE_PROJECT_ID,
+  FIREBASE_STORAGE_BUCKET,
+  FIREBASE_MESSAGING_SENDER_ID,
+  FIREBASE_APP_ID,
+  FIREBASE_MEASUREMENT_ID,
+} from "@env";
 
 // Firebase yapılandırması
 const firebaseConfig = {
-  apiKey: "AIzaSyBZARj5Mx61iP_IVv5u0ZYvGS1zFlfFGyk",
-  authDomain: "cleaningapp-918ce.firebaseapp.com",
-  projectId: "cleaningapp-918ce",
-  storageBucket: "cleaningapp-918ce.appspot.com",
-  messagingSenderId: "825991865441",
-  appId: "1:825991865441:web:16e0e58d422eb30aecf620",
-  measurementId: "G-FSFQWJE4MW",
+  apiKey: FIREBASE_API_KEY,
+  authDomain: FIREBASE_AUTH_DOMAIN,
+  projectId: FIREBASE_PROJECT_ID,
+  storageBucket: FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
+  appId: FIREBASE_APP_ID,
+  measurementId: FIREBASE_MEASUREMENT_ID,
 };
 
 // Firebase uygulamasını başlat
-if (!getApps().length) {
-  initializeApp(firebaseConfig);
-}
+const FIREBASE_APP = !getApps().length
+  ? initializeApp(firebaseConfig)
+  : getApps()[0];
 
-// Firebase servislerini başlat
-const FIREBASE_APP = initializeApp(firebaseConfig);
-const db = getFirestore(FIREBASE_APP); // Firestore için
-const auth = getAuth(FIREBASE_APP); // Authentication için
+// Firestore ve Auth servisleri
+const db = getFirestore(FIREBASE_APP);
+const auth = getAuth(FIREBASE_APP);
 
-// Kimlik doğrulama durumu değişikliklerini dinle ve AsyncStorage ile sakla
+// Kimlik doğrulama durumunu dinle ve AsyncStorage ile sakla
 onAuthStateChanged(auth, async (user) => {
   if (user) {
-    // Kullanıcı oturum açmışsa UID'yi sakla
     await AsyncStorage.setItem("userToken", user.uid);
   } else {
-    // Kullanıcı çıkış yapmışsa UID'yi kaldır
     await AsyncStorage.removeItem("userToken");
   }
 });
 
-// Firebase servislerini dışa aktar
 export { FIREBASE_APP, db, auth };
